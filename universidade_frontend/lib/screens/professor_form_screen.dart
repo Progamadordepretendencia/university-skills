@@ -43,17 +43,29 @@ class _ProfessorFormScreenState extends State<ProfessorFormScreen> {
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      final novoProfessor = Professor(
-        id: widget.professor!.id, // Mantém o ID se estiver editando
-        nome: _nomeController.text,
-        email: _emailController.text,
-        dataContratacao: _dataContratacao,
-      );
-      // Retorna o professor criado/editado para a tela anterior
-      Navigator.of(context).pop(novoProfessor);
-    }
+  // 1. Criamos uma variável para guardar o estado atual do formulário.
+  final formState = _formKey.currentState;
+
+  // 2. Verificação de segurança: Se o estado do formulário for nulo, não fazemos nada.
+  // Isso previne o erro "Unexpected null value".
+  if (formState == null) {
+    print("DEBUG: O estado do formulário (formState) é nulo. Verifique a atribuição da GlobalKey.");
+    return; // Sai da função para evitar o erro.
   }
+
+  // 3. Se o estado não for nulo, validamos e continuamos como antes.
+  if (formState.validate()) {
+    final novoProfessor = Professor(
+      id: widget.professor?.id,
+      nome: _nomeController.text,
+      email: _emailController.text,
+      dataContratacao: _dataContratacao,
+    );
+    // Retorna o professor criado/editado para a tela anterior
+    Navigator.of(context).pop(novoProfessor);
+  }
+}
+  
 
   @override
   Widget build(BuildContext context) {

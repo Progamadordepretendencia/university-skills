@@ -65,28 +65,35 @@ class _ProfessoresScreenState extends State<ProfessoresScreen> {
   }
 
   // Mostra um diálogo de confirmação antes de deletar
-  void _confirmDeleteProfessor(int id) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Confirmar Exclusão'),
-        content: const Text('Você tem certeza que deseja deletar este professor?'),
-        actions: [
-          TextButton(
-            child: const Text('Cancelar'),
-            onPressed: () => Navigator.of(ctx).pop(),
-          ),
-          TextButton(
-            child: const Text('Deletar'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              _deleteProfessor(id);
-            },
-          ),
-        ],
-      ),
-    );
+ void _confirmDeleteProfessor(int? id) { // <-- 1. Aceita um int que PODE ser nulo
+  // 2. Verificação de segurança: se o id for nulo, não faz nada e evita o erro.
+  if (id == null) {
+    _showSnackBar('ID do professor inválido.', isError: true);
+    return;
   }
+
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Confirmar Exclusão'),
+      content: const Text('Você tem certeza que deseja deletar este professor?'),
+      actions: [
+        TextButton(
+          child: const Text('Cancelar'),
+          onPressed: () => Navigator.of(ctx).pop(),
+        ),
+        TextButton(
+          child: const Text('Deletar'),
+          onPressed: () {
+            Navigator.of(ctx).pop();
+            // 3. Aqui dentro, temos certeza que 'id' não é nulo por causa da verificação acima.
+            _deleteProfessor(id);
+          },
+        ),
+      ],
+    ),
+  );
+}
 
   // Chama a API para deletar o professor
   void _deleteProfessor(int id) async {
