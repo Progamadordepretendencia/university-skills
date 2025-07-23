@@ -1,6 +1,6 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'screens/professores_screen.dart'; // 1. Importe a nova tela
+import 'screens/disciplinas_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         cardTheme: const CardThemeData(elevation: 2), // Um pequeno estilo para os cards
       ),
       debugShowCheckedModeBanner: false,
-      home: const ProfessoresScreen(), // 2. Defina a tela de professores como a inicial
+      home: const DisciplinasScreen(), // 2. Defina a tela de professores como a inicial
     );
   }
 }
