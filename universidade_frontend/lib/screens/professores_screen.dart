@@ -5,109 +5,105 @@ import '../services/api_service.dart';
 import '../models/professor_model.dart';
 
 class ProfessoresScreen extends StatefulWidget {
+  // O construtor agora aceita uma Key, que será usada pela MainScreen.
   const ProfessoresScreen({super.key});
 
   @override
-  State<ProfessoresScreen> createState() => _ProfessoresScreenState();
+  // IMPORTANTE: A classe do State agora é pública para ser acessada pela GlobalKey
+  ProfessoresScreenState createState() => ProfessoresScreenState();
 }
 
-class _ProfessoresScreenState extends State<ProfessoresScreen> {
-  // Agora a lista é um estado, para que possamos atualizá-la
+// A classe State também foi tornada pública (sem o '_')
+class ProfessoresScreenState extends State<ProfessoresScreen> {
   late Future<List<Professor>> _professoresFuture;
   final ApiService _apiService = ApiService();
 
   @override
   void initState() {
     super.initState();
-    _refreshProfessores();
+    refreshProfessores();
   }
 
-  // Função para recarregar a lista da API
-  void _refreshProfessores() {
+  // Método agora é público para ser chamado pela MainScreen
+  void refreshProfessores() {
     setState(() {
       _professoresFuture = _apiService.fetchProfessores();
     });
   }
 
-  // Navega para a tela de formulário para criar um novo professor
-  void _navigateToAddProfessor() async {
+  // Método agora é público
+  void navigateToAddProfessor() async {
     final result = await Navigator.of(context).push<Professor>(
       MaterialPageRoute(builder: (_) => const ProfessorFormScreen()),
     );
 
-    if (result != null) {
-      // Se um professor foi retornado, chama a API para criá-lo
+    if (result != null && mounted) {
       try {
         await _apiService.createProfessor(result);
-        _refreshProfessores(); // Recarrega a lista após a criação
-        _showSnackBar('Professor criado com sucesso!');
+        refreshProfessores();
+        showSnackBar('Professor criado com sucesso!');
       } catch (e) {
-        _showSnackBar('Erro ao criar professor: ${e.toString()}', isError: true);
+        showSnackBar('Erro ao criar professor: ${e.toString()}', isError: true);
       }
     }
   }
 
-  // Navega para a tela de formulário para editar um professor existente
-  void _navigateToEditProfessor(Professor professor) async {
+  // Método agora é público
+  void navigateToEditProfessor(Professor professor) async {
     final result = await Navigator.of(context).push<Professor>(
       MaterialPageRoute(builder: (_) => ProfessorFormScreen(professor: professor)),
     );
 
-    if (result != null) {
+    if (result != null && mounted) {
       try {
         await _apiService.updateProfessor(result);
-        _refreshProfessores();
-        _showSnackBar('Professor atualizado com sucesso!');
+        refreshProfessores();
+        showSnackBar('Professor atualizado com sucesso!');
       } catch (e) {
-        _showSnackBar('Erro ao atualizar professor: ${e.toString()}', isError: true);
+        showSnackBar('Erro ao atualizar professor: ${e.toString()}', isError: true);
       }
     }
   }
 
-  // Mostra um diálogo de confirmação antes de deletar
- void _confirmDeleteProfessor(int? id) { // <-- 1. Aceita um int que PODE ser nulo
-  // 2. Verificação de segurança: se o id for nulo, não faz nada e evita o erro.
-  if (id == null) {
-    _showSnackBar('ID do professor inválido.', isError: true);
-    return;
+  // Método agora é público
+  void confirmDeleteProfessor(int? id) {
+    if (id == null) return;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Confirmar Exclusão'),
+        content: const Text('Você tem certeza que deseja deletar este professor?'),
+        actions: [
+          TextButton(
+            child: const Text('Cancelar'),
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+          TextButton(
+            child: const Text('Deletar'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              deleteProfessor(id);
+            },
+          ),
+        ],
+      ),
+    );
   }
 
-  showDialog(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Confirmar Exclusão'),
-      content: const Text('Você tem certeza que deseja deletar este professor?'),
-      actions: [
-        TextButton(
-          child: const Text('Cancelar'),
-          onPressed: () => Navigator.of(ctx).pop(),
-        ),
-        TextButton(
-          child: const Text('Deletar'),
-          onPressed: () {
-            Navigator.of(ctx).pop();
-            // 3. Aqui dentro, temos certeza que 'id' não é nulo por causa da verificação acima.
-            _deleteProfessor(id);
-          },
-        ),
-      ],
-    ),
-  );
-}
-
-  // Chama a API para deletar o professor
-  void _deleteProfessor(int id) async {
+  // Método agora é público
+  void deleteProfessor(int id) async {
     try {
       await _apiService.deleteProfessor(id);
-      _refreshProfessores();
-      _showSnackBar('Professor deletado com sucesso!');
+      refreshProfessores();
+      showSnackBar('Professor deletado com sucesso!');
     } catch (e) {
-      _showSnackBar('Erro ao deletar professor: ${e.toString()}', isError: true);
+      showSnackBar('Erro ao deletar professor: ${e.toString()}', isError: true);
     }
   }
 
-  // Helper para mostrar uma SnackBar
-  void _showSnackBar(String message, {bool isError = false}) {
+  // Método agora é público
+  void showSnackBar(String message, {bool isError = false}) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -118,62 +114,48 @@ class _ProfessoresScreenState extends State<ProfessoresScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gerenciar Professores'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _refreshProfessores,
-          ),
-        ],
-      ),
-      body: FutureBuilder<List<Professor>>(
-        future: _professoresFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Erro: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('Nenhum professor encontrado.'));
-          } else {
-            final professores = snapshot.data!;
-            return ListView.builder(
-              itemCount: professores.length,
-              itemBuilder: (context, index) {
-                final professor = professores[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListTile(
-                    leading: CircleAvatar(child: Text(professor.nome[0])),
-                    title: Text(professor.nome),
-                    subtitle: Text(professor.email),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _navigateToEditProfessor(professor),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _confirmDeleteProfessor(professor.id),
-                        ),
-                      ],
-                    ),
+    // O Scaffold, AppBar e FloatingActionButton foram removidos.
+    // O widget agora retorna diretamente o FutureBuilder, que é o "miolo" da tela.
+    return FutureBuilder<List<Professor>>(
+      future: _professoresFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Erro: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('Nenhum professor encontrado.'));
+        } else {
+          final professores = snapshot.data!;
+          return ListView.builder(
+            itemCount: professores.length,
+            itemBuilder: (context, index) {
+              final professor = professores[index];
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ListTile(
+                  leading: CircleAvatar(child: Text(professor.nome.isNotEmpty ? professor.nome[0] : '?')),
+                  title: Text(professor.nome),
+                  subtitle: Text(professor.email),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () => navigateToEditProfessor(professor),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => confirmDeleteProfessor(professor.id),
+                      ),
+                    ],
                   ),
-                );
-              },
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _navigateToAddProfessor,
-        tooltip: 'Adicionar Professor',
-        child: const Icon(Icons.add),
-      ),
+                ),
+              );
+            },
+          );
+        }
+      },
     );
   }
 }
