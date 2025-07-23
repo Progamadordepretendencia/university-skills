@@ -111,11 +111,51 @@ const deleteProfessor = async (req, res) => {
 };
 
 
-// Exporta todas as funções para serem usadas nas rotas
+const getProfessorHistorico = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Esta query é a mais complexa até agora:
+    // 1. Faz um JOIN entre turmas_ministradas e disciplinas.
+    // 2. Filtra os resultados para um professor específico (pelo ID).
+    // 3. Agrupa os resultados por disciplina.
+    // 4. Usa funções de agregação (SUM, COUNT) para calcular os totais para cada grupo.
+    const [rows] = await pool.query(`
+      SELECT
+        d.id AS disciplina_id,
+        d.nome AS disciplina_nome,
+        d.codigo_disciplina,
+        SUM(t.carga_horaria_efetiva) AS total_carga_horaria,
+        SUM(t.numero_alunos) AS total_alunos,
+        COUNT(t.id) AS quantidade_turmas
+      FROM
+        turmas_ministradas t
+      INNER JOIN
+        disciplinas d ON t.disciplina_id = d.id
+      WHERE
+        t.professor_id = ?
+      GROUP BY
+        d.id, d.nome, d.codigo_disciplina
+      ORDER BY
+        disciplina_nome;
+    `, [id]);
+
+    // É possível que um professor nunca tenha ministrado uma turma,
+    // então o resultado pode ser um array vazio, o que não é um erro.
+    res.status(200).json(rows);
+
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar histórico do professor', error: error.message });
+  }
+};
+
+
+// Atualize a sua linha module.exports para ficar assim:
 module.exports = {
   getAllProfessores,
   getProfessorById,
   createProfessor,
   updateProfessor,
   deleteProfessor,
+  getProfessorHistorico,
 };

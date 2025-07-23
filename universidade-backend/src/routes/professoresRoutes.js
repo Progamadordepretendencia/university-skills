@@ -24,5 +24,7 @@ router.put('/:id', professorController.updateProfessor);
 // Rota para DELETAR um professor pelo ID
 router.delete('/:id', professorController.deleteProfessor);
 
+// Rota para buscar o histórico de um professor específico
+router.get('/:id/historico', professorController.getProfessorHistorico);
 
 module.exports = router;
