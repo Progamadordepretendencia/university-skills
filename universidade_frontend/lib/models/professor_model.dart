@@ -24,4 +24,11 @@ class Professor {
         email: json["email"],
         dataContratacao: DateTime.parse(json["data_contratacao"]),
     );
+ Map<String, dynamic> toJson() => {
+        "id": id,
+        "nome": nome,
+        "email": email,
+        // Formata a data para o padrão YYYY-MM-DD que a API espera
+        "data_contratacao": "${dataContratacao.year.toString().padLeft(4, '0')}-${dataContratacao.month.toString().padLeft(2, '0')}-${dataContratacao.day.toString().padLeft(2, '0')}",
+    };
 }
