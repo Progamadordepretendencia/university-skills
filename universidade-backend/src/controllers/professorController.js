@@ -37,29 +37,28 @@ const getProfessorById = async (req, res) => {
 
 // 2. Função para CRIAR um novo professor
 const createProfessor = async (req, res) => {
-  // Os dados do novo professor são pegos do corpo (body) da requisição
   const { nome, email, data_contratacao } = req.body;
 
-  // Validação simples para garantir que os campos necessários foram enviados
   if (!nome || !email || !data_contratacao) {
     return res.status(400).json({ message: 'Todos os campos (nome, email, data_contratacao) são obrigatórios' });
   }
 
   try {
-    // Query para inserir os novos dados na tabela
+    // Primeiro, insere o novo professor
     const [result] = await pool.query(
       'INSERT INTO professores (nome, email, data_contratacao) VALUES (?, ?, ?)',
       [nome, email, data_contratacao]
     );
 
-    // Se a inserção for bem-sucedida, retorna o status 201 (Criado)
-    // e um JSON com uma mensagem de sucesso e o ID do novo professor
-    res.status(201).json({
-      message: 'Professor criado com sucesso',
-      id: result.insertId, // 'insertId' é o ID gerado pelo banco de dados
-    });
+    const insertId = result.insertId;
+
+    // Agora, busca o professor que acabamos de criar para retorná-lo por completo
+    const [newProfessorRows] = await pool.query('SELECT * FROM professores WHERE id = ?', [insertId]);
+
+    // Retorna o status 201 (Criado) e o objeto completo do novo professor
+    res.status(201).json(newProfessorRows[0]);
+
   } catch (error) {
-    // Erro comum aqui é violação de chave única (email duplicado)
     res.status(500).json({ message: 'Erro ao criar professor', error: error.message });
   }
 };

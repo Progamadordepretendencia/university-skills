@@ -26,21 +26,21 @@ class ApiService {
 
   // 1. CRIAR um novo professor (POST)
   Future<Professor> createProfessor(Professor professor) async {
-    final response = await http.post(
-      Uri.parse('$_baseUrl/professores'),
-      headers: _headers,
-      body: jsonEncode(professor.toJson()), // Converte o objeto Professor para JSON
-    );
+  final response = await http.post(
+    Uri.parse('$_baseUrl/professores'),
+    headers: _headers,
+    body: jsonEncode(professor.toJson()),
+  );
 
-    if (response.statusCode == 201) {
-      // A API retorna o ID do novo professor, então podemos retornar o objeto completo
-      final responseBody = jsonDecode(response.body);
-      // Retornamos um novo objeto Professor com o ID que o banco de dados gerou
-      return Professor.fromJson(responseBody['createdProfessor']);
-    } else {
-      throw Exception('Falha ao criar professor. Status: ${response.statusCode}');
-    }
+  if (response.statusCode == 201) {
+    // A API agora retorna o objeto completo do professor no corpo da resposta.
+    // Apenas decodificamos e criamos o objeto Professor a partir dele.
+    final String responseBody = utf8.decode(response.bodyBytes);
+    return Professor.fromJson(jsonDecode(responseBody));
+  } else {
+    throw Exception('Falha ao criar professor. Status: ${response.statusCode}');
   }
+}
 
   // 2. ATUALIZAR um professor existente (PUT)
   Future<void> updateProfessor(Professor professor) async {
