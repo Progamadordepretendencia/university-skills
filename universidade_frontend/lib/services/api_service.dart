@@ -107,5 +107,37 @@ class ApiService {
       throw Exception('Falha ao deletar disciplina');
     }
   }
+  Future<List<Disciplina>> fetchAptidoes(int professorId) async {
+    final response = await http.get(Uri.parse('$_baseUrl/professores/$professorId/aptidoes'));
+    if (response.statusCode == 200) {
+      final String responseBody = utf8.decode(response.bodyBytes);
+      return disciplinaFromJson(responseBody);
+    } else {
+      throw Exception('Falha ao carregar aptidões');
+    }
+  }
+
+  // Adiciona uma nova aptidão
+  Future<void> addAptidao(int professorId, int disciplinaId) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/professores/$professorId/aptidoes'),
+      headers: _headers,
+      body: jsonEncode({'disciplina_id': disciplinaId}),
+    );
+    if (response.statusCode != 201) {
+      throw Exception('Falha ao adicionar aptidão');
+    }
+  }
+
+  // Remove uma aptidão existente
+  Future<void> removeAptidao(int professorId, int disciplinaId) async {
+    final response = await http.delete(
+      Uri.parse('$_baseUrl/professores/$professorId/aptidoes/$disciplinaId'),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Falha ao remover aptidão');
+    }
+  }
 }
+
 

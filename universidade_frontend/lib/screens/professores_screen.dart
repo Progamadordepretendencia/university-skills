@@ -1,5 +1,6 @@
 // lib/screens/professores_screen.dart
 import 'package:flutter/material.dart';
+import 'package:universidade_frontend/screens/aptidao_screen.dart';
 import 'package:universidade_frontend/screens/professor_form_screen.dart';
 import '../services/api_service.dart';
 import '../models/professor_model.dart';
@@ -140,6 +141,18 @@ class ProfessoresScreenState extends State<ProfessoresScreen> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                       IconButton(
+                        icon: const Icon(Icons.school, color: Colors.orange),
+                        tooltip: 'Gerenciar Aptidões',
+                       onPressed: () {
+        // Navega para a nova tela, passando o objeto professor
+                        Navigator.of(context).push(
+                            MaterialPageRoute(
+                            builder: (_) => AptidaoScreen(professor: professor),
+                               ),
+                            );
+                         },
+                      ),
                       IconButton(
                         icon: const Icon(Icons.edit, color: Colors.blue),
                         onPressed: () => navigateToEditProfessor(professor),
