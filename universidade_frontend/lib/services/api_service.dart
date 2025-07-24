@@ -1,22 +1,21 @@
 // lib/services/api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:universidade_frontend/models/disciplina_model.dart';
-import 'package:universidade_frontend/models/turma_model.dart';
+import '../models/disciplina_model.dart';
 import '../models/professor_model.dart';
+import '../models/turma_model.dart';
 
 class ApiService {
+  // 1. A variável PRECISA estar declarada aqui, no topo da classe.
   static const String _baseUrl = 'http://localhost:3000/api';
   final Map<String, String> _headers = {
     'Content-Type': 'application/json; charset=UTF-8',
   };
 
-  // --- MÉTODO EXISTENTE ---
+  // --- MÉTODOS PARA PROFESSORES ---
   Future<List<Professor>> fetchProfessores() async {
     final response = await http.get(Uri.parse('$_baseUrl/professores'));
-
     if (response.statusCode == 200) {
-      // Usar utf8.decode para garantir a correta interpretação de caracteres especiais
       final String responseBody = utf8.decode(response.bodyBytes);
       return professorFromJson(responseBody);
     } else {
@@ -24,50 +23,42 @@ class ApiService {
     }
   }
 
-  // --- NOVOS MÉTODOS ---
-
-  // 1. CRIAR um novo professor (POST)
   Future<Professor> createProfessor(Professor professor) async {
-  final response = await http.post(
-    Uri.parse('$_baseUrl/professores'),
-    headers: _headers,
-    body: jsonEncode(professor.toJson()),
-  );
-
-  if (response.statusCode == 201) {
-    // A API agora retorna o objeto completo do professor no corpo da resposta.
-    // Apenas decodificamos e criamos o objeto Professor a partir dele.
-    final String responseBody = utf8.decode(response.bodyBytes);
-    return Professor.fromJson(jsonDecode(responseBody));
-  } else {
-    throw Exception('Falha ao criar professor. Status: ${response.statusCode}');
+    final response = await http.post(
+      Uri.parse('$_baseUrl/professores'),
+      headers: _headers,
+      body: jsonEncode(professor.toJson()),
+    );
+    if (response.statusCode == 201) {
+      final String responseBody = utf8.decode(response.bodyBytes);
+      return Professor.fromJson(jsonDecode(responseBody));
+    } else {
+      throw Exception('Falha ao criar professor. Status: ${response.statusCode}');
+    }
   }
-}
 
-  // 2. ATUALIZAR um professor existente (PUT)
   Future<void> updateProfessor(Professor professor) async {
     final response = await http.put(
       Uri.parse('$_baseUrl/professores/${professor.id}'),
       headers: _headers,
       body: jsonEncode(professor.toJson()),
     );
-
     if (response.statusCode != 200) {
       throw Exception('Falha ao atualizar professor. Status: ${response.statusCode}');
     }
   }
 
-  // 3. DELETAR um professor (DELETE)
   Future<void> deleteProfessor(int id) async {
     final response = await http.delete(
       Uri.parse('$_baseUrl/professores/$id'),
     );
-
     if (response.statusCode != 200) {
       throw Exception('Falha ao deletar professor. Status: ${response.statusCode}');
     }
   }
-   Future<List<Disciplina>> fetchDisciplinas() async {
+
+  // --- MÉTODOS PARA DISCIPLINAS ---
+  Future<List<Disciplina>> fetchDisciplinas() async {
     final response = await http.get(Uri.parse('$_baseUrl/disciplinas'));
     if (response.statusCode == 200) {
       final String responseBody = utf8.decode(response.bodyBytes);
@@ -108,6 +99,8 @@ class ApiService {
       throw Exception('Falha ao deletar disciplina');
     }
   }
+
+  // --- MÉTODOS PARA APTIDÕES ---
   Future<List<Disciplina>> fetchAptidoes(int professorId) async {
     final response = await http.get(Uri.parse('$_baseUrl/professores/$professorId/aptidoes'));
     if (response.statusCode == 200) {
@@ -118,7 +111,6 @@ class ApiService {
     }
   }
 
-  // Adiciona uma nova aptidão
   Future<void> addAptidao(int professorId, int disciplinaId) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/professores/$professorId/aptidoes'),
@@ -130,7 +122,6 @@ class ApiService {
     }
   }
 
-  // Remove uma aptidão existente
   Future<void> removeAptidao(int professorId, int disciplinaId) async {
     final response = await http.delete(
       Uri.parse('$_baseUrl/professores/$professorId/aptidoes/$disciplinaId'),
@@ -139,8 +130,8 @@ class ApiService {
       throw Exception('Falha ao remover aptidão');
     }
   }
-    // --- MÉTODOS PARA TURMAS ---
 
+  // --- MÉTODOS PARA TURMAS ---
   Future<List<Turma>> fetchTurmas() async {
     final response = await http.get(Uri.parse('$_baseUrl/turmas'));
     if (response.statusCode == 200) {
@@ -150,8 +141,7 @@ class ApiService {
       throw Exception('Falha ao carregar as turmas');
     }
   }
-
-  Future<Turma> createTurma(Turma turma) async {
+   Future<Turma> createTurma(Turma turma) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/turmas'),
       headers: _headers,
@@ -182,7 +172,17 @@ class ApiService {
       throw Exception('Falha ao deletar turma');
     }
   }
-}
 
+  // --- MÉTODO PARA CONSULTA (ITEM E) ---
+  Future<List<Professor>> fetchProfessoresAptos(int disciplinaId) async {
+    // Agora a variável `_baseUrl` é visível aqui dentro e o erro desaparecerá.
+    final response = await http.get(Uri.parse('$_baseUrl/disciplinas/$disciplinaId/professores-aptos'));
 
-
+    if (response.statusCode == 200) {
+      final String responseBody = utf8.decode(response.bodyBytes);
+      return professorFromJson(responseBody);
+    } else {
+      throw Exception('Falha ao buscar professores aptos');
+    }
+  }
+} 

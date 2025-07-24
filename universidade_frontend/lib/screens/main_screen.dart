@@ -1,7 +1,9 @@
+// lib/screens/main_screen.dart (VERSÃO ATUALIZADA)
 import 'package:flutter/material.dart';
+import 'package:universidade_frontend/screens/consulta_aptidao_screen.dart'; // <-- NOVO
 import 'package:universidade_frontend/screens/disciplinas_screen.dart';
 import 'package:universidade_frontend/screens/professores_screen.dart';
-import 'package:universidade_frontend/screens/turmas_screen.dart'; 
+import 'package:universidade_frontend/screens/turmas_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,29 +14,28 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  // Adicione a GlobalKey para a nova tela
   final GlobalKey<ProfessoresScreenState> _professoresKey = GlobalKey();
   final GlobalKey<DisciplinasScreenState> _disciplinasKey = GlobalKey();
-  final GlobalKey<TurmasScreenState> _turmasKey = GlobalKey(); // <-- NOVO
+  final GlobalKey<TurmasScreenState> _turmasKey = GlobalKey();
 
   late final List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
-    // Adicione a nova tela à lista
     _screens = <Widget>[
       ProfessoresScreen(key: _professoresKey),
       DisciplinasScreen(key: _disciplinasKey),
-      TurmasScreen(key: _turmasKey), 
+      TurmasScreen(key: _turmasKey),
+      const ConsultaAptidaoScreen(), // <-- NOVO
     ];
   }
 
-  // Adicione o título para a nova tela
   static const List<String> _titles = <String>[
     'Gerenciar Professores',
     'Gerenciar Disciplinas',
     'Histórico de Turmas',
+    'Consulta de Aptidão', // <-- NOVO
   ];
 
   void _onItemTapped(int index) {
@@ -48,27 +49,34 @@ class _MainScreenState extends State<MainScreen> {
       _professoresKey.currentState?.navigateToAddProfessor();
     } else if (_selectedIndex == 1) {
       _disciplinasKey.currentState?.navigateToAddDisciplina();
-    } else if (_selectedIndex == 2) { // <-- NOVO
+    } else if (_selectedIndex == 2) {
       _turmasKey.currentState?.navigateToAddTurma();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Apenas mostra o botão de adicionar nas 3 primeiras telas
+    final showFab = _selectedIndex < 3;
+
     return Scaffold(
       appBar: AppBar(title: Text(_titles[_selectedIndex])),
       body: IndexedStack(index: _selectedIndex, children: _screens),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onAddButtonPressed,
-        tooltip: _titles[_selectedIndex].replaceFirst('Gerenciar ', 'Adicionar '),
-        child: const Icon(Icons.add),
-      ),
-      // Adicione o novo item na barra de navegação
+      floatingActionButton: showFab
+          ? FloatingActionButton(
+              onPressed: _onAddButtonPressed,
+              tooltip: 'Adicionar',
+              child: const Icon(Icons.add),
+            )
+          : null, // Esconde o botão na tela de consulta
       bottomNavigationBar: BottomNavigationBar(
+        // Adicionado para garantir que os itens fiquem visíveis com 4+ abas
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Professores'),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Disciplinas'),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Turmas'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Consultas'), // <-- NOVO
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
