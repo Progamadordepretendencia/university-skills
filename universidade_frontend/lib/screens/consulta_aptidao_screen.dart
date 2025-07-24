@@ -72,13 +72,20 @@ class _ConsultaAptidaoScreenState extends State<ConsultaAptidaoScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+Widget build(BuildContext context) {
+  // 1. Adicione o Scaffold como o widget raiz da tela.
+  return Scaffold(
+    // 2. Adicione uma AppBar. Isso dá um título à tela e um botão de "voltar" automaticamente.
+    appBar: AppBar(
+      title: const Text('Aptidão por Disciplina'),
+    ),
+    // 3. O conteúdo anterior da sua tela agora vai dentro da propriedade `body` do Scaffold.
+    body: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Menu suspenso para selecionar a disciplina
+          // ... o resto do seu código (Dropdown, Divider, Expanded) continua o mesmo aqui dentro ...
           DropdownButtonFormField<int>(
             value: _selectedDisciplinaId,
             hint: _isLoadingDisciplinas
@@ -99,15 +106,14 @@ class _ConsultaAptidaoScreenState extends State<ConsultaAptidaoScreen> {
           const SizedBox(height: 8),
           Text('Professores Aptos', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
-
-          // Área de Resultados
           Expanded(
             child: _buildResultsWidget(),
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   // Widget auxiliar para construir a área de resultados
   Widget _buildResultsWidget() {

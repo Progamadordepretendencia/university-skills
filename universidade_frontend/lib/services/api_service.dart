@@ -2,11 +2,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/disciplina_model.dart';
+import '../models/historico_model.dart';
 import '../models/professor_model.dart';
 import '../models/turma_model.dart';
 
 class ApiService {
-  // 1. A variável PRECISA estar declarada aqui, no topo da classe.
   static const String _baseUrl = 'http://localhost:3000/api';
   final Map<String, String> _headers = {
     'Content-Type': 'application/json; charset=UTF-8',
@@ -141,7 +141,8 @@ class ApiService {
       throw Exception('Falha ao carregar as turmas');
     }
   }
-   Future<Turma> createTurma(Turma turma) async {
+
+  Future<Turma> createTurma(Turma turma) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/turmas'),
       headers: _headers,
@@ -175,9 +176,7 @@ class ApiService {
 
   // --- MÉTODO PARA CONSULTA (ITEM E) ---
   Future<List<Professor>> fetchProfessoresAptos(int disciplinaId) async {
-    // Agora a variável `_baseUrl` é visível aqui dentro e o erro desaparecerá.
     final response = await http.get(Uri.parse('$_baseUrl/disciplinas/$disciplinaId/professores-aptos'));
-
     if (response.statusCode == 200) {
       final String responseBody = utf8.decode(response.bodyBytes);
       return professorFromJson(responseBody);
@@ -185,4 +184,15 @@ class ApiService {
       throw Exception('Falha ao buscar professores aptos');
     }
   }
-} 
+
+  // --- MÉTODO PARA CONSULTA (ITEM F) ---
+  Future<List<Historico>> fetchProfessorHistorico(int professorId) async {
+    final response = await http.get(Uri.parse('$_baseUrl/professores/$professorId/historico'));
+    if (response.statusCode == 200) {
+      final String responseBody = utf8.decode(response.bodyBytes);
+      return historicoFromJson(responseBody);
+    } else {
+      throw Exception('Falha ao buscar histórico do professor');
+    }
+  }
+}

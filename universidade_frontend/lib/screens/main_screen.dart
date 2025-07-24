@@ -1,6 +1,6 @@
 // lib/screens/main_screen.dart (VERSÃO ATUALIZADA)
 import 'package:flutter/material.dart';
-import 'package:universidade_frontend/screens/consulta_aptidao_screen.dart'; // <-- NOVO
+import 'package:universidade_frontend/screens/consultas_menu_screen.dart';
 import 'package:universidade_frontend/screens/disciplinas_screen.dart';
 import 'package:universidade_frontend/screens/professores_screen.dart';
 import 'package:universidade_frontend/screens/turmas_screen.dart';
@@ -27,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
       ProfessoresScreen(key: _professoresKey),
       DisciplinasScreen(key: _disciplinasKey),
       TurmasScreen(key: _turmasKey),
-      const ConsultaAptidaoScreen(), // <-- NOVO
+      const ConsultasMenuScreen(), 
     ];
   }
 
@@ -35,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
     'Gerenciar Professores',
     'Gerenciar Disciplinas',
     'Histórico de Turmas',
-    'Consulta de Aptidão', // <-- NOVO
+    'Consultas e Relatórios', // <-- NOVO
   ];
 
   void _onItemTapped(int index) {
