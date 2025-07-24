@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:universidade_frontend/models/disciplina_model.dart';
+import 'package:universidade_frontend/models/turma_model.dart';
 import '../models/professor_model.dart';
 
 class ApiService {
@@ -138,6 +139,50 @@ class ApiService {
       throw Exception('Falha ao remover aptidão');
     }
   }
+    // --- MÉTODOS PARA TURMAS ---
+
+  Future<List<Turma>> fetchTurmas() async {
+    final response = await http.get(Uri.parse('$_baseUrl/turmas'));
+    if (response.statusCode == 200) {
+      final String responseBody = utf8.decode(response.bodyBytes);
+      return turmaFromJson(responseBody);
+    } else {
+      throw Exception('Falha ao carregar as turmas');
+    }
+  }
+
+  Future<Turma> createTurma(Turma turma) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/turmas'),
+      headers: _headers,
+      body: jsonEncode(turma.toJson()),
+    );
+    if (response.statusCode == 201) {
+      final String responseBody = utf8.decode(response.bodyBytes);
+      return Turma.fromJson(jsonDecode(responseBody));
+    } else {
+      throw Exception('Falha ao criar turma');
+    }
+  }
+
+  Future<void> updateTurma(Turma turma) async {
+    final response = await http.put(
+      Uri.parse('$_baseUrl/turmas/${turma.id}'),
+      headers: _headers,
+      body: jsonEncode(turma.toJson()),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Falha ao atualizar turma');
+    }
+  }
+
+  Future<void> deleteTurma(int id) async {
+    final response = await http.delete(Uri.parse('$_baseUrl/turmas/$id'));
+    if (response.statusCode != 200) {
+      throw Exception('Falha ao deletar turma');
+    }
+  }
 }
+
 
 
