@@ -34,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
     'Gerenciar Professores',
     'Gerenciar Disciplinas',
     'Histórico de Turmas',
-    'Consultas e Relatórios', // <-- NOVO
+    'Consultas e Relatórios',
   ];
 
   void _onItemTapped(int index) {
