@@ -1,7 +1,7 @@
 
 # 🎓 Sistema de Gestão Acadêmica Universitária
 
-Este é um projeto full-stack de um Sistema de Gestão Acadêmica, desenvolvido para permitir que Departamentos de Ensino de uma Universidade gerenciem seus professores, disciplinas, turmas e aptidões de ensino. 
+Este é um projeto full-stack de um Sistema de Gestão Acadêmica, desenvolvido para permitir que Departamentos de Ensino de uma Universidade gerenciem seus professores, disciplinas, turmas e aptidões de ensino. Por proposta do orientador, deveria-se se usar assistência de algum LLM que para este projeto foi o Gemini.
 
 -----
 
