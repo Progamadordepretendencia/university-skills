@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const MainScreen(), // A casa do app agora é a MainScreen
+      home: const MainScreen(), 
     );
   }
 }

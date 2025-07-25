@@ -6,15 +6,12 @@ import '../services/api_service.dart';
 import '../models/professor_model.dart';
 
 class ProfessoresScreen extends StatefulWidget {
-  // O construtor agora aceita uma Key, que será usada pela MainScreen.
   const ProfessoresScreen({super.key});
 
   @override
-  // IMPORTANTE: A classe do State agora é pública para ser acessada pela GlobalKey
   ProfessoresScreenState createState() => ProfessoresScreenState();
 }
 
-// A classe State também foi tornada pública (sem o '_')
 class ProfessoresScreenState extends State<ProfessoresScreen> {
   late Future<List<Professor>> _professoresFuture;
   final ApiService _apiService = ApiService();
@@ -25,14 +22,12 @@ class ProfessoresScreenState extends State<ProfessoresScreen> {
     refreshProfessores();
   }
 
-  // Método agora é público para ser chamado pela MainScreen
   void refreshProfessores() {
     setState(() {
       _professoresFuture = _apiService.fetchProfessores();
     });
   }
 
-  // Método agora é público
   void navigateToAddProfessor() async {
     final result = await Navigator.of(context).push<Professor>(
       MaterialPageRoute(builder: (_) => const ProfessorFormScreen()),
@@ -49,7 +44,6 @@ class ProfessoresScreenState extends State<ProfessoresScreen> {
     }
   }
 
-  // Método agora é público
   void navigateToEditProfessor(Professor professor) async {
     final result = await Navigator.of(context).push<Professor>(
       MaterialPageRoute(builder: (_) => ProfessorFormScreen(professor: professor)),
@@ -66,7 +60,6 @@ class ProfessoresScreenState extends State<ProfessoresScreen> {
     }
   }
 
-  // Método agora é público
   void confirmDeleteProfessor(int? id) {
     if (id == null) return;
     showDialog(
@@ -115,8 +108,6 @@ class ProfessoresScreenState extends State<ProfessoresScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // O Scaffold, AppBar e FloatingActionButton foram removidos.
-    // O widget agora retorna diretamente o FutureBuilder, que é o "miolo" da tela.
     return FutureBuilder<List<Professor>>(
       future: _professoresFuture,
       builder: (context, snapshot) {
@@ -145,7 +136,6 @@ class ProfessoresScreenState extends State<ProfessoresScreen> {
                         icon: const Icon(Icons.school, color: Colors.orange),
                         tooltip: 'Gerenciar Aptidões',
                        onPressed: () {
-        // Navega para a nova tela, passando o objeto professor
                         Navigator.of(context).push(
                             MaterialPageRoute(
                             builder: (_) => AptidaoScreen(professor: professor),

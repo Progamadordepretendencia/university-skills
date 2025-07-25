@@ -1,4 +1,3 @@
-// lib/models/turma_model.dart (VERSÃO ROBUSTA)
 import 'dart:convert';
 
 List<Turma> turmaFromJson(String str) => List<Turma>.from(json.decode(str).map((x) => Turma.fromJson(x)));
@@ -28,17 +27,17 @@ class Turma {
 
   factory Turma.fromJson(Map<String, dynamic> json) {
      return Turma(
-      id: json["id"], // ID pode ser nulo, então não precisa de '??'
-      professorId: json["professor_id"], // professorId também pode ser nulo
+      id: json["id"], 
+      professorId: json["professor_id"], 
 
-      // A partir daqui, todos os campos são obrigatórios (não-nulos)
+      
       disciplinaId: json["disciplina_id"] ?? 0,
       ano: json["ano"] ?? 0,
       semestre: json["semestre"] ?? 0,
       numeroAlunos: json["numero_alunos"] ?? 0,
       cargaHorariaEfetiva: json["carga_horaria_efetiva"] ?? 0,
       
-      // Campos de texto podem ser nulos, então está tudo bem
+      
       professorNome: json["professor_nome"],
       disciplinaNome: json["disciplina_nome"],
     );

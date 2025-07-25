@@ -1,4 +1,3 @@
-// lib/screens/consulta_aptidao_screen.dart
 import 'package:flutter/material.dart';
 import 'package:universidade_frontend/models/disciplina_model.dart';
 import 'package:universidade_frontend/models/professor_model.dart';
@@ -13,8 +12,6 @@ class ConsultaAptidaoScreen extends StatefulWidget {
 
 class _ConsultaAptidaoScreenState extends State<ConsultaAptidaoScreen> {
   final ApiService _apiService = ApiService();
-
-  // Variáveis de estado
   List<Disciplina>? _disciplinas;
   int? _selectedDisciplinaId;
   List<Professor>? _professoresAptos;
@@ -27,7 +24,6 @@ class _ConsultaAptidaoScreenState extends State<ConsultaAptidaoScreen> {
     _fetchDisciplinas();
   }
 
-  // Busca a lista de todas as disciplinas para preencher o dropdown
   Future<void> _fetchDisciplinas() async {
     try {
       final disciplinas = await _apiService.fetchDisciplinas();
@@ -45,14 +41,13 @@ class _ConsultaAptidaoScreenState extends State<ConsultaAptidaoScreen> {
     }
   }
 
-  // Chamado quando o usuário seleciona uma disciplina no dropdown
   Future<void> _onDisciplinaSelected(int? disciplinaId) async {
     if (disciplinaId == null) return;
 
     setState(() {
       _selectedDisciplinaId = disciplinaId;
-      _isSearching = true; // Mostra o loading na área de resultados
-      _professoresAptos = null; // Limpa resultados antigos
+      _isSearching = true; 
+      _professoresAptos = null; 
     });
 
     try {
@@ -73,19 +68,18 @@ class _ConsultaAptidaoScreenState extends State<ConsultaAptidaoScreen> {
 
   @override
 Widget build(BuildContext context) {
-  // 1. Adicione o Scaffold como o widget raiz da tela.
   return Scaffold(
-    // 2. Adicione uma AppBar. Isso dá um título à tela e um botão de "voltar" automaticamente.
+   
     appBar: AppBar(
       title: const Text('Aptidão por Disciplina'),
     ),
-    // 3. O conteúdo anterior da sua tela agora vai dentro da propriedade `body` do Scaffold.
+  
     body: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ... o resto do seu código (Dropdown, Divider, Expanded) continua o mesmo aqui dentro ...
+      
           DropdownButtonFormField<int>(
             value: _selectedDisciplinaId,
             hint: _isLoadingDisciplinas
@@ -115,7 +109,6 @@ Widget build(BuildContext context) {
   );
 }
 
-  // Widget auxiliar para construir a área de resultados
   Widget _buildResultsWidget() {
     if (_isSearching) {
       return const Center(child: CircularProgressIndicator());

@@ -1,4 +1,3 @@
-// lib/screens/aptidao_screen.dart
 import 'package:flutter/material.dart';
 import '../models/disciplina_model.dart';
 import '../models/professor_model.dart';
@@ -15,7 +14,6 @@ class AptidaoScreen extends StatefulWidget {
 
 class _AptidaoScreenState extends State<AptidaoScreen> {
   final ApiService _apiService = ApiService();
-  // Duas listas para o estado: todas as disciplinas e as aptidões do professor
   List<Disciplina>? _todasDisciplinas;
   Set<int>? _aptidoesAtuaisIds; // Usar um Set é eficiente para buscas rápidas
 
@@ -29,7 +27,6 @@ class _AptidaoScreenState extends State<AptidaoScreen> {
 
   Future<void> _fetchData() async {
     try {
-      // Usamos Future.wait para buscar ambos os dados em paralelo, otimizando o carregamento
       final results = await Future.wait([
         _apiService.fetchDisciplinas(),
         _apiService.fetchAptidoes(widget.professor.id!),
@@ -40,7 +37,6 @@ class _AptidaoScreenState extends State<AptidaoScreen> {
 
       setState(() {
         _todasDisciplinas = todas;
-        // Criamos um Set com os IDs das disciplinas que o professor já é apto
         _aptidoesAtuaisIds = atuais.map((d) => d.id!).toSet();
         _isLoading = false;
       });
@@ -56,12 +52,11 @@ class _AptidaoScreenState extends State<AptidaoScreen> {
     }
   }
 
-  // Função chamada quando uma checkbox é marcada/desmarcada
   Future<void> _onAptidaoChanged(bool isChecked, Disciplina disciplina) async {
     final professorId = widget.professor.id!;
     final disciplinaId = disciplina.id!;
 
-    // Feedback visual imediato para o usuário
+  
     setState(() {
       if (isChecked) {
         _aptidoesAtuaisIds!.add(disciplinaId);
@@ -70,7 +65,6 @@ class _AptidaoScreenState extends State<AptidaoScreen> {
       }
     });
 
-    // Chamada à API em segundo plano
     try {
       if (isChecked) {
         await _apiService.addAptidao(professorId, disciplinaId);
@@ -83,7 +77,6 @@ class _AptidaoScreenState extends State<AptidaoScreen> {
         );
       }
     } catch (e) {
-      // Se a API falhar, reverte o estado visual e mostra o erro
       setState(() {
         if (isChecked) {
           _aptidoesAtuaisIds!.remove(disciplinaId);

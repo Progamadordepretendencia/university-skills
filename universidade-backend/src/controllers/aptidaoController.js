@@ -54,14 +54,12 @@ const removerAptidao = async (req, res) => {
     }
 };
 
-// --- NOVA FUNÇÃO ---
+
 // Função para obter todos os professores aptos para uma determinada disciplina
 const getProfessoresAptosPorDisciplina = async (req, res) => {
   const { disciplinaId } = req.params;
 
   try {
-    // Esta query SQL faz um JOIN da tabela de professores com a tabela de aptidão
-    // e filtra pelo ID da disciplina fornecido na URL.
     const [rows] = await pool.query(`
       SELECT p.id, p.nome, p.email, p.data_contratacao
       FROM professores p

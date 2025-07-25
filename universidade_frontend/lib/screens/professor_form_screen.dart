@@ -1,10 +1,8 @@
-// lib/screens/professor_form_screen.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Pacote para formatação de data
 import '../models/professor_model.dart';
 
 class ProfessorFormScreen extends StatefulWidget {
-  // O professor pode ser nulo (para criação) ou existente (para edição)
   final Professor? professor;
 
   const ProfessorFormScreen({super.key, this.professor});
@@ -22,7 +20,6 @@ class _ProfessorFormScreenState extends State<ProfessorFormScreen> {
   @override
   void initState() {
     super.initState();
-    // Preenche os campos se estiver editando um professor
     _nomeController = TextEditingController(text: widget.professor?.nome ?? '');
     _emailController = TextEditingController(text: widget.professor?.email ?? '');
     _dataContratacao = widget.professor?.dataContratacao ?? DateTime.now();
@@ -43,14 +40,9 @@ class _ProfessorFormScreenState extends State<ProfessorFormScreen> {
   }
 
   void _submitForm() {
-  // 1. Criamos uma variável para guardar o estado atual do formulário.
   final formState = _formKey.currentState;
-
-  // 2. Verificação de segurança: Se o estado do formulário for nulo, não fazemos nada.
-  // Isso previne o erro "Unexpected null value".
   if (formState == null) {
-    print("DEBUG: O estado do formulário (formState) é nulo. Verifique a atribuição da GlobalKey.");
-    return; // Sai da função para evitar o erro.
+    return; 
   }
 
   // 3. Se o estado não for nulo, validamos e continuamos como antes.
@@ -61,7 +53,6 @@ class _ProfessorFormScreenState extends State<ProfessorFormScreen> {
       email: _emailController.text,
       dataContratacao: _dataContratacao,
     );
-    // Retorna o professor criado/editado para a tela anterior
     Navigator.of(context).pop(novoProfessor);
   }
 }

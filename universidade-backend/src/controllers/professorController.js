@@ -1,8 +1,5 @@
-// src/controllers/professorController.js
-
 const pool = require('../config/db');
 
-// Função para obter todos os professores (Já existente)
 const getAllProfessores = async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM professores');
@@ -12,14 +9,11 @@ const getAllProfessores = async (req, res) => {
   }
 };
 
-// --- NOVAS FUNÇÕES ---
 
 // 1. Função para obter UM professor pelo seu ID
 const getProfessorById = async (req, res) => {
-  // O ID é pego dos parâmetros da URL (ex: /api/professores/1)
   const { id } = req.params;
   try {
-    // Query que busca o professor com o ID correspondente
     // O '?' é um placeholder para prevenir SQL Injection. O valor de 'id' é passado em um array.
     const [rows] = await pool.query('SELECT * FROM professores WHERE id = ?', [id]);
 
@@ -73,15 +67,15 @@ const updateProfessor = async (req, res) => {
   }
 
   try {
-    // Query para atualizar o registro com o ID correspondente
+    // Isso previne erros se o frontend enviar um formato de data completo (ISO 8601).
+    const formattedDate = new Date(data_contratacao).toISOString().split('T')[0];
+
     const [result] = await pool.query(
       'UPDATE professores SET nome = ?, email = ?, data_contratacao = ? WHERE id = ?',
-      [nome, email, data_contratacao, id]
+      [nome, email, formattedDate, id] // Usamos a data formatada
     );
 
-    // O resultado de um UPDATE contém a propriedade 'affectedRows'
     if (result.affectedRows === 0) {
-      // Se nenhuma linha foi afetada, significa que o professor com aquele ID não existe
       return res.status(404).json({ message: 'Professor não encontrado' });
     }
 

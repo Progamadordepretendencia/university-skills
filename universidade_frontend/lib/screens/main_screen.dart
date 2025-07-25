@@ -1,4 +1,3 @@
-// lib/screens/main_screen.dart (VERSÃO ATUALIZADA)
 import 'package:flutter/material.dart';
 import 'package:universidade_frontend/screens/consultas_menu_screen.dart';
 import 'package:universidade_frontend/screens/disciplinas_screen.dart';
@@ -56,7 +55,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Apenas mostra o botão de adicionar nas 3 primeiras telas
     final showFab = _selectedIndex < 3;
 
     return Scaffold(
@@ -70,7 +68,6 @@ class _MainScreenState extends State<MainScreen> {
             )
           : null, // Esconde o botão na tela de consulta
       bottomNavigationBar: BottomNavigationBar(
-        // Adicionado para garantir que os itens fiquem visíveis com 4+ abas
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Professores'),

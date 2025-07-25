@@ -1,4 +1,3 @@
-// lib/screens/disciplinas_screen.dart
 import 'package:flutter/material.dart';
 import 'package:universidade_frontend/screens/disciplina_form_screen.dart';
 import '../models/disciplina_model.dart';
@@ -8,7 +7,6 @@ class DisciplinasScreen extends StatefulWidget {
   const DisciplinasScreen({super.key});
 
   @override
-  // A classe do State agora é pública
   DisciplinasScreenState createState() => DisciplinasScreenState();
 }
 
@@ -22,14 +20,12 @@ class DisciplinasScreenState extends State<DisciplinasScreen> {
     refreshDisciplinas();
   }
 
-  // Método agora é público
   void refreshDisciplinas() {
     setState(() {
       _disciplinasFuture = _apiService.fetchDisciplinas();
     });
   }
 
-  // Método agora é público
   void navigateToAddDisciplina() async {
     final result = await Navigator.of(context).push<Disciplina>(
       MaterialPageRoute(builder: (_) => const DisciplinaFormScreen()),
@@ -45,7 +41,6 @@ class DisciplinasScreenState extends State<DisciplinasScreen> {
     }
   }
 
-  // Método agora é público
   void navigateToEditDisciplina(Disciplina disciplina) async {
     final result = await Navigator.of(context).push<Disciplina>(
       MaterialPageRoute(builder: (_) => DisciplinaFormScreen(disciplina: disciplina)),
@@ -61,7 +56,6 @@ class DisciplinasScreenState extends State<DisciplinasScreen> {
     }
   }
 
-  // Método agora é público
   void confirmDeleteDisciplina(int? id) {
     if (id == null) return;
     showDialog(
@@ -83,7 +77,6 @@ class DisciplinasScreenState extends State<DisciplinasScreen> {
     );
   }
 
-  // Método agora é público
   void deleteDisciplina(int id) async {
     try {
       await _apiService.deleteDisciplina(id);
@@ -94,7 +87,6 @@ class DisciplinasScreenState extends State<DisciplinasScreen> {
     }
   }
 
-  // Método agora é público
   void showSnackBar(String message, {bool isError = false}) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(

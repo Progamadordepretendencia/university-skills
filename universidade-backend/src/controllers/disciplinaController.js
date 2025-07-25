@@ -1,5 +1,3 @@
-// src/controllers/disciplinaController.js
-
 const pool = require('../config/db');
 
 // Listar todas as disciplinas

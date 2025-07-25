@@ -1,4 +1,3 @@
-// lib/screens/consultas_menu_screen.dart
 import 'package:flutter/material.dart';
 import 'package:universidade_frontend/screens/consulta_aptidao_screen.dart';
 import 'package:universidade_frontend/screens/consulta_historico_screen.dart';

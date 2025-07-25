@@ -1,7 +1,5 @@
-// lib/models/disciplina_model.dart
 import 'dart:convert';
 
-// Helper para decodificar uma lista de disciplinas a partir de um JSON
 List<Disciplina> disciplinaFromJson(String str) => List<Disciplina>.from(json.decode(str).map((x) => Disciplina.fromJson(x)));
 
 class Disciplina {
@@ -17,15 +15,18 @@ class Disciplina {
     required this.cargaHoraria,
   });
 
-  // Construtor factory para criar uma Disciplina a partir de um mapa JSON
-  factory Disciplina.fromJson(Map<String, dynamic> json) => Disciplina(
-        id: json["id"],
-        codigoDisciplina: json["codigo_disciplina"],
-        nome: json["nome"],
-        cargaHoraria: json["carga_horaria"],
-      );
+  // FÁBRICA DE CONSTRUÇÃO À PROVA DE FALHAS
+  factory Disciplina.fromJson(Map<String, dynamic> json) {
+    return Disciplina(
+      id: json["id"],
+      codigoDisciplina: json["codigo_disciplina"] ?? '',
+      // CORREÇÃO: Se 'nome' for nulo, usa uma string vazia ''
+      nome: json["nome"] ?? '',
+      // Boa prática: Adicionar a mesma proteção para o campo numérico
+      cargaHoraria: json["carga_horaria"] ?? 0,
+    );
+  }
 
-  // Método para converter o objeto Disciplina para um mapa JSON
   Map<String, dynamic> toJson() => {
         "id": id,
         "codigo_disciplina": codigoDisciplina,

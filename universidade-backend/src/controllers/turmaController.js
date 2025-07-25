@@ -1,9 +1,5 @@
-// src/controllers/turmaController.js
-
 const pool = require('../config/db');
 
-// Função para LISTAR todas as turmas ministradas
-// Usamos JOINs para enriquecer o resultado com os nomes do professor e da disciplina
 const getAllTurmas = async (req, res) => {
   try {
     const [rows] = await pool.query(`
