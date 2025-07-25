@@ -1,6 +1,5 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
-import 'screens/main_screen.dart'; // Importe a nova tela principal
+import 'screens/main_screen.dart'; 
 
 void main() {
   runApp(const MyApp());
